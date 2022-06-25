@@ -62,8 +62,11 @@ func (c *Chapter) doPaginate() error {
 
 	if c.NewPage > c.CurrentPage {
 		c.CurrentPage = c.NewPage
-		c.Offset = c.Limit
+		c.Offset = (c.CurrentPage) * c.Limit
 	}
+	
+	c.Start = c.Offset
+	c.End = c.Offset + c.Limit
 
 	return nil
 }
@@ -95,14 +98,16 @@ func (c *Chapter) createLinks() error {
 		return errors.New("BaseURL value is missing")
 	}
 
-	c.CurrentPageURI = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage)
+	c.CurrentPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage) + "&PageSize=" + c.Limit
+	
+	c.FirstPageURI = c.BaseURL + "?Page=0" + "&PageSize=" + c.Limit
 	
 	if c.CurrentPage < c.LastPage {
-		c.NextPageURI = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage+1)
+		c.NextPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage+1) + "&PageSize=" + c.Limit
 	}
 
 	if c.LastPage > c.CurrentPage {
-		c.PreviousPageURI = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage-1)
+		c.PreviousPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage-1) + "&PageSize=" + c.Limit
 	}
 
 	return nil
@@ -111,10 +116,6 @@ func (c *Chapter) createLinks() error {
 // Sets the defaults values for current page
 // and limit if none of them were provided.
 func (c *Chapter) setDefaults() {
-	if c.CurrentPage == 0 {
-		c.CurrentPage = 1
-	}
-
 	if c.Limit == 0 {
 		c.Limit = 10
 	}
