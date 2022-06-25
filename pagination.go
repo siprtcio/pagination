@@ -78,7 +78,7 @@ func (c *Chapter) ceilLastPage() error {
 		return errors.New("TotalResults value is missing")
 	}
 
-	c.LastPage = int(math.Ceil(float64(c.TotalResults) / float64(c.Limit)))
+	c.LastPage = int(math.Floor(float64(c.TotalResults) / float64(c.Limit)))
 
 	return nil
 }
