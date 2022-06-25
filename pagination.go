@@ -109,7 +109,7 @@ func (c *Chapter) createLinks() error {
 		c.NextPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage+1) + "&PageSize=" + strconv.Itoa(c.Limit)
 	}
 
-	if c.LastPage > c.CurrentPage {
+	if c.LastPage > c.CurrentPage && c.CurrentPage != 0{
 		c.PreviousPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage-1) + "&PageSize=" + strconv.Itoa(c.Limit)
 	}
 
