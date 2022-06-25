@@ -11,9 +11,9 @@ type Chapter struct {
 	// The base URL for the endpoint.
 	// It is only necessary when using links.
 	// Will be omitted from JSON when links are set to false.
-	BaseURL string `json:"base_url,omitempty"`
+	BaseURL string `json:"-"`
 	// The next URL string.
-	CurrentPageURI string `json:"next_page_uri,omitempty"`
+	CurrentPageURI string `json:"uri,omitempty"`
 	NextPageURI string `json:"next_page_uri,omitempty"`
 	FirstPageURI string `json:"first_page_uri,omitempty"`
 	PreviousPageURI string `json:"previous_page_uri,omitempty"`
