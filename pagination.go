@@ -13,27 +13,23 @@ type Chapter struct {
 	// Will be omitted from JSON when links are set to false.
 	BaseURL string `json:"base_url,omitempty"`
 	// The next URL string.
-	// Will be omitted from JSON when links are set to false.
-	NextURL string `json:"next_url,omitempty"`
-	// The previous URL string.
-	// Will be omitted from JSON when links are set to false.
-	PreviousURL string `json:"prev_url,omitempty"`
-	// Whether to create links or not.
-	// Pagination without links is faster.
-	Links bool `json:"-"`
+	CurrentPageURI string `json:"next_page_uri,omitempty"`
+	NextPageURI string `json:"next_page_uri,omitempty"`
+	FirstPageURI string `json:"first_page_uri,omitempty"`
+	PreviousPageURI string `json:"previous_page_uri,omitempty"`
 	// The inicial offset position.
 	Offset int `json:"-"`
-	// The limit per page.
-	// If none is provided, the limit will be setted to 10.
-	Limit int `json:"per_page"`
+	Limit int `json:"page_size"`
 	// The new page number captured on the request params.
 	// Will be omitted from JSON, since there is no need for it.
 	NewPage int `json:"-"`
 	// The current page of the tome.
 	// If none is provided, the current page will be setted to 1.
-	CurrentPage int `json:"current_page"`
+	CurrentPage int `json:"page"`
 	// The last page of the tome.
 	LastPage int `json:"last_page"`
+	Start int `json:"start"`
+	End int `json:"end"`
 	// The total results, this usually comes from
 	// a database query.
 	TotalResults int `json:"total_results"`
@@ -60,13 +56,13 @@ func (c *Chapter) Paginate() error {
 
 // Calculates the offset and the limit.
 func (c *Chapter) doPaginate() error {
-	if c.NewPage == 0 {
-		return errors.New("NewPage value is missing")
+	if c.NewPage < 0 {
+		c.NewPage = 0
 	}
 
 	if c.NewPage > c.CurrentPage {
 		c.CurrentPage = c.NewPage
-		c.Offset = (c.CurrentPage - 1) * c.Limit
+		c.Offset = c.Limit
 	}
 
 	return nil
@@ -86,16 +82,9 @@ func (c *Chapter) ceilLastPage() error {
 
 // Handles links validations.
 func (c *Chapter) checkLinks() error {
-	if !c.Links && c.BaseURL != "" {
-		return errors.New("Links value is false, set to true")
+	if err := c.createLinks(); err != nil {
+		return err
 	}
-
-	if c.Links {
-		if err := c.createLinks(); err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -106,12 +95,14 @@ func (c *Chapter) createLinks() error {
 		return errors.New("BaseURL value is missing")
 	}
 
+	c.CurrentPageURI = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage)
+	
 	if c.CurrentPage < c.LastPage {
-		c.NextURL = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage+1)
+		c.NextPageURI = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage+1)
 	}
 
 	if c.LastPage > c.CurrentPage {
-		c.PreviousURL = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage-1)
+		c.PreviousPageURI = c.BaseURL + "?page=" + strconv.Itoa(c.CurrentPage-1)
 	}
 
 	return nil
