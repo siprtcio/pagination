@@ -98,16 +98,16 @@ func (c *Chapter) createLinks() error {
 		return errors.New("BaseURL value is missing")
 	}
 
-	c.CurrentPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage) + "&PageSize=" + c.Limit
+	c.CurrentPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage) + "&PageSize=" + strconv.Itoa(c.Limit)
 	
-	c.FirstPageURI = c.BaseURL + "?Page=0" + "&PageSize=" + c.Limit
+	c.FirstPageURI = c.BaseURL + "?Page=0" + "&PageSize=" + strconv.Itoa(c.Limit)
 	
 	if c.CurrentPage < c.LastPage {
-		c.NextPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage+1) + "&PageSize=" + c.Limit
+		c.NextPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage+1) + "&PageSize=" + strconv.Itoa(c.Limit)
 	}
 
 	if c.LastPage > c.CurrentPage {
-		c.PreviousPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage-1) + "&PageSize=" + c.Limit
+		c.PreviousPageURI = c.BaseURL + "?Page=" + strconv.Itoa(c.CurrentPage-1) + "&PageSize=" + strconv.Itoa(c.Limit)
 	}
 
 	return nil
