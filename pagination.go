@@ -68,7 +68,7 @@ func (c *Chapter) doPaginate() error {
 	c.Start = c.Offset
 	c.End = c.TotalResults - 1
 	if c.CurrentPage != c.LastPage {
-	   c.End = c.Offset + c.Limit
+		c.End = (c.Offset + c.Limit) - 1
 	}
 
 	return nil
